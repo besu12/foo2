@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2fe91fad-0d36-4ae0-82d5-a7dae63e3ad1" >
+		<http:listener-connection host="0.0.0.0" port="8085" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="cdb5394a-192c-42e3-91e1-3fdd780d2b30" >
+		<db:my-sql-connection host="mudb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="scattergatherFlow" doc:id="8596654a-5a54-4b5e-bffb-cb03df77ef4e" >
+		<http:listener doc:name="Listener" doc:id="675c3133-80c0-422c-aceb-fd1e9730aafb" config-ref="HTTP_Listener_config" path="/new"/>
+		<db:select doc:name="Select" doc:id="70ff9121-22b9-4b2e-af69-de7664567659" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from american ]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="fc27dc61-6785-4c55-a04e-c21baad5c3ef" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
